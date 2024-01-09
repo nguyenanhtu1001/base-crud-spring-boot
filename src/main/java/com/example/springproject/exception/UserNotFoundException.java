@@ -1,6 +1,7 @@
 package com.example.springproject.exception;
 
 import com.example.springproject.exception.base.NotFoundException;
+import static com.example.springproject.constant.ExceptionCode.USER_NOT_FOUND_CODE;
 
 /**
  * UserNotFoundException is a type of exception commonly
@@ -8,6 +9,6 @@ import com.example.springproject.exception.base.NotFoundException;
  */
 public class UserNotFoundException extends NotFoundException {
   public UserNotFoundException() {
-    setCode("com.example.springproject.exception.base.NotFoundException.UserNotFoundException");
+    setCode(USER_NOT_FOUND_CODE);
   }
 }
