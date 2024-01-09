@@ -1,6 +1,6 @@
 package com.example.springproject.constant;
 /**
- * This Exception code
+ * This is Exception code
  */
 public class ExceptionCode {
   public static final String BAD_REQUEST_CODE = "com.example.springproject.exception.base.BadRequestException";
