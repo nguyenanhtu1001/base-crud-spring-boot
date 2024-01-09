@@ -15,11 +15,22 @@ import org.springframework.context.annotation.Bean;
  */
 @Configuration
 public class ServiceConfiguration {
+  /**
+   *
+   * @param repository accept an UserRepository as an input
+   * @return instance of UserService
+   */
+
   @Bean
   public UserService userService(UserRepository repository) {
     return new UserServiceImpl(repository);
   }
 
+  /**
+   *
+   * @param messageSource accept a MessageSource as an input
+   * @return instance of MessageServiceImpl
+   */
   @Bean
   public MessageService messageService(MessageSource messageSource) {
     return new MessageServiceImpl(messageSource);

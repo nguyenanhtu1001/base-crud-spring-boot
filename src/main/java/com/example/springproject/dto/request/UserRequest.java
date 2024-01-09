@@ -6,6 +6,9 @@ import lombok.NoArgsConstructor;
 
 /**
  * This is a request dto (data transfer object) class contains user information
+ * @author [nguyenanhtu123]
+ * @version [1.0.0]
+ * @since 1/6/2023
  */
 @Data
 @AllArgsConstructor

@@ -11,6 +11,9 @@ import org.springframework.http.HttpStatus;
 /**
  * This is a base response class
  * @param <T> generic type you want to return
+ * @author [nguyenanhtu123]
+ * @version [1.0.0]
+ * @since 1/6/2023
  */
 @Data
 @AllArgsConstructor(staticName = "of")
@@ -24,11 +27,11 @@ public class ResponseGeneral<T> {
 
   /**
    * This is a static initial method
-   * @param status
-   * @param message
-   * @param data
-   * @return
-   * @param <T>
+   * @param status response status
+   * @param message response message
+   * @param data the generic data type in response
+   * @return a ResponseGeneral with generic type input
+   * @param <T> generic type
    */
   public static <T> ResponseGeneral<T> of(int status, String message, T data) {
     return of(status, message, data, DateUtils.getCurrentDateString());
@@ -36,10 +39,10 @@ public class ResponseGeneral<T> {
 
   /**
    * This function is used when a resource is successfully initialized
-   * @param message
-   * @param data
-   * @return
-   * @param <T>
+   * @param message response message
+   * @param data the generic data type in response
+   * @return a ResponseGeneral with generic type input
+   * @param <T> generic type
    */
   public static <T> ResponseGeneral<T> ofCreated(String message, T data) {
     return of(HttpStatus.CREATED.value(), message, data, DateUtils.getCurrentDateString());
@@ -47,9 +50,9 @@ public class ResponseGeneral<T> {
 
   /**
    * This function is used when a resource is successfully updated or removed
-   * @param message
-   * @return
-   * @param <T>
+   * @param message response message
+   * @return a ResponseGeneral with generic type input
+   * @param <T> generic type
    */
   public static <T> ResponseGeneral<T> ofSuccess(String message) {
     return of(HttpStatus.OK.value(), message, null, DateUtils.getCurrentDateString());
@@ -57,10 +60,10 @@ public class ResponseGeneral<T> {
 
   /**
    * This function is used when the client get a resources successfully
-   * @param message
-   * @param data
-   * @return
-   * @param <T>
+   * @param message response message
+   * @param data the generic data type in response
+   * @return a ResponseGeneral with generic type input
+   * @param <T> generic type
    */
   public static <T> ResponseGeneral<T> ofSuccess(String message, T data) {
     return of(HttpStatus.OK.value(), message, data, DateUtils.getCurrentDateString());

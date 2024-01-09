@@ -15,6 +15,10 @@ import static com.example.springproject.constant.CommonConstants.MESSAGE_SOURCE;
 @Configuration
 public class MessageSourceConfiguration {
 
+  /**
+   *
+   * @return instance of ReloadableResourceBundleMessageSource
+   */
 
   @Bean
   public MessageSource messageSource() {
