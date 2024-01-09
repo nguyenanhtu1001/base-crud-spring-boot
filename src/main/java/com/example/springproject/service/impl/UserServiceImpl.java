@@ -102,7 +102,6 @@ public class UserServiceImpl extends BaseServiceImpl<User> implements UserServic
     @Override
     public PageResponse<UserResponse> getAllUser(int size, int page) {
         log.info("(request) listAllUser size : {}, page: {}", size, page);
-
         Pageable pageable = PageRequest.of(page, size);
         Page<UserResponse> listAllUsers = repository.findAllUser(pageable);
         return PageResponse.of(listAllUsers.getContent(), (int) listAllUsers.getTotalElements());
