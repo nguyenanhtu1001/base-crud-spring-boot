@@ -14,6 +14,8 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.transaction.annotation.Transactional;
 
+import static com.example.springproject.constant.CommonConstants.PERCENT;
+
 @Slf4j
 public class UserServiceImpl extends BaseServiceImpl<User> implements UserService {
   private final UserRepository repository;
@@ -77,8 +79,9 @@ public class UserServiceImpl extends BaseServiceImpl<User> implements UserServic
     log.info("(request) listSearchUser keyword:{}, size : {}, page: {}", keyword, size, page);
 
     Pageable pageable = PageRequest.of(page, size);
-    Page<UserResponse> list = repository.searchUser(pageable, keyword);
-    return PageResponse.of(list.getContent(), (int) list.getTotalElements());
+    Page<UserResponse> users = repository.searchUser(pageable, keyword, PERCENT, PERCENT);
+
+    return PageResponse.of(users.getContent(), (int) users.getTotalElements());
   }
 
   private User checkUserExist(String id) {
