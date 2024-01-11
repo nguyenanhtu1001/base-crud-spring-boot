@@ -8,6 +8,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import java.util.Optional;
+
 /**
  * Repository interface for managing User entities. Extends the BaseRepository interface.
  */
@@ -75,6 +77,6 @@ public interface UserRepository extends BaseRepository<User> {
   Page<UserResponse> searchUser(Pageable pageable, @Param("keyword") String keyword,
                                 @Param("prefix") String prefix, @Param("suffix") String suffix);
 
-
+  Optional<User> findUserByUsername(String username);
 
 }
