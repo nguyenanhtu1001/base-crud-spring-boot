@@ -9,10 +9,15 @@ import com.example.springproject.repository.UserRepository;
 import com.example.springproject.service.UserService;
 import com.example.springproject.service.base.BaseServiceImpl;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 import static com.example.springproject.constant.CommonConstants.PERCENT;
 
@@ -84,12 +89,31 @@ public class UserServiceImpl extends BaseServiceImpl<User> implements UserServic
      *
      * @param id The unique identifier of the user to be deleted.
      */
+//    @Transactional
+//    @Override
+//    public void delete(String id) {
+//        log.info("(request) delete id: {}", id);
+//        User user = checkUserExist(id);
+//        repository.delete(user);
+//
+//    }
+
+    /**
+     * Deletes a user by their unique identifier using a stored procedure.
+     *
+     * This method logs information about the delete request, checks if the user with the given unique identifier exists,
+     * and then proceeds to invoke a stored procedure to delete the user using the UserRepository's delete procedure.
+     * If the user is not found, a UserNotFoundException is thrown.
+     *
+     * @param id The unique identifier of the user to be deleted.
+     * @throws UserNotFoundException if the user with the given id is not found.
+     */
     @Transactional
     @Override
     public void delete(String id) {
         log.info("(request) delete id: {}", id);
-        User user = checkUserExist(id);
-        repository.delete(user);
+        checkUserExist(id);
+        repository.deleteUser(id);
     }
 
     /**
@@ -111,10 +135,10 @@ public class UserServiceImpl extends BaseServiceImpl<User> implements UserServic
      * Retrieves a paginated list of users based on a search keyword.
      *
      * @param keyword The search keyword to filter users.
-     * @param size   The number of users to be retrieved in each page.
+     * @param size    The number of users to be retrieved in each page.
      * @param page    The page number.
      * @return A PageResponse containing a list of UserResponse objects matching the search criteria.
-     *         The PageResponse includes the user data for the requested page and the total number of matching users.
+     * The PageResponse includes the user data for the requested page and the total number of matching users.
      */
     @Override
     public PageResponse<UserResponse> getUserBySearch(String keyword, int size, int page) {
@@ -124,6 +148,40 @@ public class UserServiceImpl extends BaseServiceImpl<User> implements UserServic
         Page<UserResponse> users = repository.searchUser(pageable, keyword, PERCENT, PERCENT);
 
         return PageResponse.of(users.getContent(), (int) users.getTotalElements());
+    }
+
+    /**
+     * Retrieves a paginated list of UserResponse objects.
+     * <p>
+     * This method is responsible for fetching a paginated list of users from the repository,
+     * transforming them into UserResponse objects, and returning the result.
+     * The transactional annotation ensures that the method is executed within a transaction context.
+     *
+     * @param size The number of users to be retrieved in each page.
+     * @param page The page number.
+     * @return A List of UserResponse objects representing the paginated list of users.
+     */
+    @Transactional
+    @Override
+    public List<UserResponse> getAllUsers(int size, int page) {
+        // Call the repository to fetch a paginated list of users using a stored procedure.
+        List<User> users = repository.getAllUser(size, page);
+
+        // Map the list of User entities to a list of UserResponse objects using Java Stream and map.
+        return users.stream().map(user -> new UserResponse(
+                user.getId(),
+                user.getUsername(),
+                null,
+                user.getEmail(),
+                user.getPhone(),
+                user.getRole()
+        )).collect(Collectors.toList());
+    }
+
+    @Override
+    public UserResponse updateUser(UserRequest user, String id) {
+
+        return null;
     }
 
     /**

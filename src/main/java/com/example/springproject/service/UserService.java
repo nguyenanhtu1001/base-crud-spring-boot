@@ -5,6 +5,8 @@ import com.example.springproject.dto.base.PageResponse;
 import com.example.springproject.dto.request.UserRequest;
 import com.example.springproject.dto.response.UserResponse;
 
+import java.util.List;
+
 /**
  * Service interface for managing user-related operations.
  */
@@ -52,4 +54,14 @@ public interface UserService {
    */
   PageResponse<UserResponse> getUserBySearch(String keyword, int size, int page);
 
+  /**
+   * Call procedure to retrieve a paginated list of all users.
+   *
+   * @param size The number of users to be retrieved in each page.
+   * @param page The page number.
+   * @return The List containing a list of UserResponse objects.
+   */
+  List<UserResponse> getAllUsers(int size, int page);
+
+  UserResponse updateUser(UserRequest user,String id);
 }

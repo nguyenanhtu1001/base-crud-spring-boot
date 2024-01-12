@@ -17,6 +17,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 import static com.example.springproject.constant.CommonConstants.*;
 import static com.example.springproject.constant.MessageCodeConstant.*;
 
@@ -194,6 +196,29 @@ public class UserController {
         log.info("(delete) id : {}", id);
         userService.delete(id);
         return ResponseGeneral.ofSuccess(messageService.getMessage(DELETE_USER, language));
+    }
+
+    /**
+     * Endpoint to retrieve a paginated list of users using a stored procedure.
+     *
+     * This endpoint handles GET requests to fetch a paginated list of users, utilizing a stored procedure
+     * to retrieve the data. It accepts parameters for pagination (size and page) and a header for language preference.
+     *
+     * @param size      The number of users to be retrieved in each page (optional, default is set in DEFAULT_PAGE_SIZE).
+     * @param page      The page number (optional, default is set in DEFAULT_PAGE_NUMBER).
+     * @param language  The preferred language for response messages (optional, default is set in DEFAULT_LANGUAGE).
+     * @return A ResponseGeneral object containing the paginated list of UserResponse objects
+     *         and a success message retrieved from the message service.
+     */
+    @GetMapping("/all/useProcedure")
+    public ResponseGeneral<List<UserResponse>> getAllUsers(
+            @RequestParam(name = "size", defaultValue = DEFAULT_PAGE_SIZE) int size,
+            @RequestParam(name = "page", defaultValue = DEFAULT_PAGE_NUMBER) int page,
+            @RequestHeader(name = LANGUAGE, defaultValue = DEFAULT_LANGUAGE) String language
+    ){
+        return ResponseGeneral.ofSuccess(messageService.getMessage(LIST_USER, language),
+                userService.getAllUsers( size, page)
+        );
     }
 }
 
