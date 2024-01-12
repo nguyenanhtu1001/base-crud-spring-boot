@@ -28,4 +28,8 @@ public class AuthenticationRequest {
 
     @Pattern(regexp = "^(?=.*[!@#$%^&*()-_+=])(?=.*[A-Z])(?=.*[0-9]).{6,}$", message = "Password must contains at least 1 uppercase character, 1 number, 1 special character and have at least 6 characters!")
     private String password;
+
+    private String email;
+    private String phone;
+    private String role;
 }
