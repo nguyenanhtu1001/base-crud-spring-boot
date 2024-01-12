@@ -53,172 +53,184 @@ import static com.example.springproject.constant.MessageCodeConstant.*;
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/users")
 public class UserController {
-    private final UserService userService;
-    private final MessageService messageService;
+  private final UserService userService;
+  private final MessageService messageService;
 
-    /**
-     * Handles GET requests to retrieve a user by ID.
-     *
-     * @param id       The ID of the user to retrieve.
-     * @param language The language for message localization.
-     * @return A ResponseEntity with a standardized response containing the localized message and the retrieved user data.
-     */
-    @Operation(summary = "Get user by ID", description = "Retrieve user details based on the provided ID.")
-    @ApiResponse(responseCode = "200", description = "Successful operation",
-            content = @Content(mediaType = "application/json",
-                    schema = @Schema(implementation = UserResponse.class)))
-    @ApiResponse(responseCode = "404", description = "User not found")
-    @Parameter(name = "id", description = "The ID of the user to retrieve", required = true)
-    @Parameter(name = "language", description = "The language for response messages", required = false)
-    @GetMapping("/{id}")
-    public ResponseGeneral<UserResponse> getById(
-            @PathVariable String id,
-            @RequestHeader(name = LANGUAGE, defaultValue = DEFAULT_LANGUAGE) String language
-    ) {
-        log.info("(getById) id : {}", id);
-        return ResponseGeneral.ofSuccess(messageService.getMessage(GET_USER_BY_ID, language),
-                userService.getById(id));
-    }
+  /**
+   * Handles GET requests to retrieve a user by ID.
+   *
+   * @param id       The ID of the user to retrieve.
+   * @param language The language for message localization.
+   * @return A ResponseEntity with a standardized response containing the localized message and the retrieved user data.
+   */
+  @Operation(summary = "Get user by ID", description = "Retrieve user details based on the provided ID.")
+  @ApiResponse(responseCode = "200", description = "Successful operation",
+        content = @Content(mediaType = "application/json",
+              schema = @Schema(implementation = UserResponse.class)))
+  @ApiResponse(responseCode = "404", description = "User not found")
+  @Parameter(name = "id", description = "The ID of the user to retrieve", required = true)
+  @Parameter(name = "language", description = "The language for response messages", required = false)
+  @GetMapping("/{id}")
+  public ResponseGeneral<UserResponse> getById(
+        @PathVariable String id,
+        @RequestHeader(name = LANGUAGE, defaultValue = DEFAULT_LANGUAGE) String language
+  ) {
+    log.info("(getById) id : {}", id);
+    return ResponseGeneral.ofSuccess(messageService.getMessage(GET_USER_BY_ID, language),
+          userService.getById(id));
+  }
 
-    /**
-     * Handles POST requests to create a new user.
-     *
-     * @param request  The request body containing user creation details.
-     * @param language The language for message localization.
-     * @return A ResponseEntity with a standardized response containing the localized message and the created user data.
-     */
-    @Operation(summary = "Create a new user", description = "Creates a new user based on the provided request.")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "201", description = "User created successfully",
-                    content = @Content(mediaType = "application/json",
-                            schema = @Schema(implementation = UserResponse.class))),
-            @ApiResponse(responseCode = "400", description = "Bad request"),
-            @ApiResponse(responseCode = "500", description = "Internal server error")
-    })
-    @PostMapping
-    public ResponseGeneral<UserResponse> create(
-            @RequestBody UserRequest request,
-            @RequestHeader(name = LANGUAGE, defaultValue = DEFAULT_LANGUAGE) String language
-    ) {
-        log.info("(create) Request : {}", request);
-        return ResponseGeneral.ofCreated(messageService.getMessage(CREATE_USER, language),
-                userService.create(request));
-    }
+  /**
+   * Handles POST requests to create a new user.
+   *
+   * @param request  The request body containing user creation details.
+   * @param language The language for message localization.
+   * @return A ResponseEntity with a standardized response containing the localized message and the created user data.
+   */
+  @Operation(summary = "Create a new user", description = "Creates a new user based on the provided request.")
+  @ApiResponses(value = {
+        @ApiResponse(responseCode = "201", description = "User created successfully",
+              content = @Content(mediaType = "application/json",
+                    schema = @Schema(implementation = UserResponse.class))),
+        @ApiResponse(responseCode = "400", description = "Bad request"),
+        @ApiResponse(responseCode = "500", description = "Internal server error")
+  })
+  @PostMapping
+  public ResponseGeneral<UserResponse> create(
+        @RequestBody UserRequest request,
+        @RequestHeader(name = LANGUAGE, defaultValue = DEFAULT_LANGUAGE) String language
+  ) {
+    log.info("(create) Request : {}", request);
+    return ResponseGeneral.ofCreated(messageService.getMessage(CREATE_USER, language),
+          userService.create(request));
+  }
 
-    /**
-     * Handles GET requests to search for users based on a keyword.
-     *
-     * @param keyword  The keyword to search for in user data.
-     * @param size     The number of users to include in each page of the result.
-     * @param page     The page number of the result to retrieve.
-     * @param language The language for message localization.
-     * @return A ResponseEntity with a standardized response containing the localized message and a paginated list of matching users.
-     */
-    @Operation(summary = "Search users", description = "Retrieve a paginated list of users based on search criteria.")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Successful operation",
-                    content = @Content(mediaType = "application/json",
-                            schema = @Schema(implementation = PageResponse.class))),
-            @ApiResponse(responseCode = "400", description = "Bad request"),
-            @ApiResponse(responseCode = "500", description = "Internal server error")
-    })
-    @Parameter(name = "keyword", description = "Search keyword", required = false)
-    @Parameter(name = "size", description = "Number of items per page", required = false)
-    @Parameter(name = "page", description = "Page number", required = false)
-    @Parameter(name = "language", description = "Language for response messages", required = false)
-    @GetMapping("/search")
-    public ResponseGeneral<PageResponse<UserResponse>> getUserBySearch(
-            @RequestParam(name = "keyword", required = false) String keyword,
-            @RequestParam(name = "size", defaultValue = DEFAULT_PAGE_SIZE) int size,
-            @RequestParam(name = "page", defaultValue = DEFAULT_PAGE_NUMBER) int page,
-            @RequestHeader(name = LANGUAGE, defaultValue = DEFAULT_LANGUAGE) String language
-    ) {
-        log.info("(listSearchUser) keyword: {}, size : {}, page: {}", keyword, size, page);
-        return ResponseGeneral.ofSuccess(messageService.getMessage(LIST_USER, language),
-                userService.getUserBySearch(keyword, size, page)
-        );
-    }
+  /**
+   * Handles GET requests to search for users based on a keyword.
+   *
+   * @param keyword  The keyword to search for in user data.
+   * @param size     The number of users to include in each page of the result.
+   * @param page     The page number of the result to retrieve.
+   * @param language The language for message localization.
+   * @return A ResponseEntity with a standardized response containing the localized message and a paginated list of matching users.
+   */
+  @Operation(summary = "Search users", description = "Retrieve a paginated list of users based on search criteria.")
+  @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Successful operation",
+              content = @Content(mediaType = "application/json",
+                    schema = @Schema(implementation = PageResponse.class))),
+        @ApiResponse(responseCode = "400", description = "Bad request"),
+        @ApiResponse(responseCode = "500", description = "Internal server error")
+  })
+  @Parameter(name = "keyword", description = "Search keyword", required = false)
+  @Parameter(name = "size", description = "Number of items per page", required = false)
+  @Parameter(name = "page", description = "Page number", required = false)
+  @Parameter(name = "language", description = "Language for response messages", required = false)
+  @GetMapping("/search")
+  public ResponseGeneral<PageResponse<UserResponse>> getUserBySearch(
+        @RequestParam(name = "keyword", required = false) String keyword,
+        @RequestParam(name = "size", defaultValue = DEFAULT_PAGE_SIZE) int size,
+        @RequestParam(name = "page", defaultValue = DEFAULT_PAGE_NUMBER) int page,
+        @RequestHeader(name = LANGUAGE, defaultValue = DEFAULT_LANGUAGE) String language
+  ) {
+    log.info("(listSearchUser) keyword: {}, size : {}, page: {}", keyword, size, page);
+    return ResponseGeneral.ofSuccess(messageService.getMessage(LIST_USER, language),
+          userService.getUserBySearch(keyword, size, page)
+    );
+  }
 
-    /**
-     * Handles GET requests to retrieve all users.
-     *
-     * @param size     The number of users to include in each page of the result.
-     * @param page     The page number of the result to retrieve.
-     * @param language The language for message localization.
-     * @return A ResponseEntity with a standardized response containing the localized message and a paginated list of all users.
-     */
-    @Operation(summary = "Get all users", description = "Retrieve a paginated list of all users.")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Successful operation",
-                    content = @Content(mediaType = "application/json",
-                            schema = @Schema(implementation = PageResponse.class))),
-            @ApiResponse(responseCode = "400", description = "Bad request"),
-            @ApiResponse(responseCode = "500", description = "Internal server error")
-    })
-    @Parameter(name = "size", description = "Number of items per page", required = false)
-    @Parameter(name = "page", description = "Page number", required = false)
-    @Parameter(name = "language", description = "Language for response messages", required = false)
-    @GetMapping("/all")
-    public ResponseGeneral<PageResponse<UserResponse>> getAllUser(
-            @RequestParam(name = "size", defaultValue = DEFAULT_PAGE_SIZE) int size,
-            @RequestParam(name = "page", defaultValue = DEFAULT_PAGE_NUMBER) int page,
-            @RequestHeader(name = LANGUAGE, defaultValue = DEFAULT_LANGUAGE) String language
-    ) {
-        log.info("(listAllUser) size : {}, page: {}", size, page);
-        return ResponseGeneral.ofSuccess(messageService.getMessage(LIST_USER, language),
-                userService.getAllUser(size, page)
-        );
-    }
+  /**
+   * Handles GET requests to retrieve all users.
+   *
+   * @param size     The number of users to include in each page of the result.
+   * @param page     The page number of the result to retrieve.
+   * @param language The language for message localization.
+   * @return A ResponseEntity with a standardized response containing the localized message and a paginated list of all users.
+   */
+  @Operation(summary = "Get all users", description = "Retrieve a paginated list of all users.")
+  @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Successful operation",
+              content = @Content(mediaType = "application/json",
+                    schema = @Schema(implementation = PageResponse.class))),
+        @ApiResponse(responseCode = "400", description = "Bad request"),
+        @ApiResponse(responseCode = "500", description = "Internal server error")
+  })
+  @Parameter(name = "size", description = "Number of items per page", required = false)
+  @Parameter(name = "page", description = "Page number", required = false)
+  @Parameter(name = "language", description = "Language for response messages", required = false)
+  @GetMapping("/all")
+  public ResponseGeneral<PageResponse<UserResponse>> getAllUser(
+        @RequestParam(name = "size", defaultValue = DEFAULT_PAGE_SIZE) int size,
+        @RequestParam(name = "page", defaultValue = DEFAULT_PAGE_NUMBER) int page,
+        @RequestHeader(name = LANGUAGE, defaultValue = DEFAULT_LANGUAGE) String language
+  ) {
+    log.info("(listAllUser) size : {}, page: {}", size, page);
+    return ResponseGeneral.ofSuccess(messageService.getMessage(LIST_USER, language),
+          userService.getAllUser(size, page)
+    );
+  }
 
-    /**
-     * Handles DELETE requests to delete a user by ID.
-     *
-     * @param id       The ID of the user to delete.
-     * @param language The language for message localization.
-     * @return A ResponseEntity with a standardized response containing the localized success message.
-     */
-    @Operation(summary = "Delete a user", description = "Delete a user based on the provided ID.")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Successful operation",
-                    content = @Content(mediaType = "application/json",
-                            schema = @Schema(implementation = Void.class))),
-            @ApiResponse(responseCode = "400", description = "Bad request"),
-            @ApiResponse(responseCode = "404", description = "User not found"),
-            @ApiResponse(responseCode = "500", description = "Internal server error")
-    })
-    @Parameter(name = "id", description = "ID of the user to delete", required = true)
-    @Parameter(name = "language", description = "Language for response messages", required = false)
-    @DeleteMapping("{id}")
-    public ResponseGeneral<Void> delete(
-            @PathVariable String id,
-            @RequestHeader(name = LANGUAGE, defaultValue = DEFAULT_LANGUAGE) String language
-    ) {
-        log.info("(delete) id : {}", id);
-        userService.delete(id);
-        return ResponseGeneral.ofSuccess(messageService.getMessage(DELETE_USER, language));
-    }
+  /**
+   * Handles DELETE requests to delete a user by ID.
+   *
+   * @param id       The ID of the user to delete.
+   * @param language The language for message localization.
+   * @return A ResponseEntity with a standardized response containing the localized success message.
+   */
+  @Operation(summary = "Delete a user", description = "Delete a user based on the provided ID.")
+  @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Successful operation",
+              content = @Content(mediaType = "application/json",
+                    schema = @Schema(implementation = Void.class))),
+        @ApiResponse(responseCode = "400", description = "Bad request"),
+        @ApiResponse(responseCode = "404", description = "User not found"),
+        @ApiResponse(responseCode = "500", description = "Internal server error")
+  })
+  @Parameter(name = "id", description = "ID of the user to delete", required = true)
+  @Parameter(name = "language", description = "Language for response messages", required = false)
+  @DeleteMapping("{id}")
+  public ResponseGeneral<Void> delete(
+        @PathVariable String id,
+        @RequestHeader(name = LANGUAGE, defaultValue = DEFAULT_LANGUAGE) String language
+  ) {
+    log.info("(delete) id : {}", id);
+    userService.delete(id);
+    return ResponseGeneral.ofSuccess(messageService.getMessage(DELETE_USER, language));
+  }
 
-    /**
-     * Endpoint to retrieve a paginated list of users using a stored procedure.
-     *
-     * This endpoint handles GET requests to fetch a paginated list of users, utilizing a stored procedure
-     * to retrieve the data. It accepts parameters for pagination (size and page) and a header for language preference.
-     *
-     * @param size      The number of users to be retrieved in each page (optional, default is set in DEFAULT_PAGE_SIZE).
-     * @param page      The page number (optional, default is set in DEFAULT_PAGE_NUMBER).
-     * @param language  The preferred language for response messages (optional, default is set in DEFAULT_LANGUAGE).
-     * @return A ResponseGeneral object containing the paginated list of UserResponse objects
-     *         and a success message retrieved from the message service.
-     */
-    @GetMapping("/all/useProcedure")
-    public ResponseGeneral<List<UserResponse>> getAllUsers(
-            @RequestParam(name = "size", defaultValue = DEFAULT_PAGE_SIZE) int size,
-            @RequestParam(name = "page", defaultValue = DEFAULT_PAGE_NUMBER) int page,
-            @RequestHeader(name = LANGUAGE, defaultValue = DEFAULT_LANGUAGE) String language
-    ){
-        return ResponseGeneral.ofSuccess(messageService.getMessage(LIST_USER, language),
-                userService.getAllUsers( size, page)
-        );
-    }
+  /**
+   * Endpoint to retrieve a paginated list of users using a stored procedure.
+   * <p>
+   * This endpoint handles GET requests to fetch a paginated list of users, utilizing a stored procedure
+   * to retrieve the data. It accepts parameters for pagination (size and page) and a header for language preference.
+   *
+   * @param size     The number of users to be retrieved in each page (optional, default is set in DEFAULT_PAGE_SIZE).
+   * @param page     The page number (optional, default is set in DEFAULT_PAGE_NUMBER).
+   * @param language The preferred language for response messages (optional, default is set in DEFAULT_LANGUAGE).
+   * @return A ResponseGeneral object containing the paginated list of UserResponse objects
+   * and a success message retrieved from the message service.
+   */
+  @GetMapping("/all/useProcedure")
+  public ResponseGeneral<List<UserResponse>> getAllUsers(
+        @RequestParam(name = "size", defaultValue = DEFAULT_PAGE_SIZE) int size,
+        @RequestParam(name = "page", defaultValue = DEFAULT_PAGE_NUMBER) int page,
+        @RequestHeader(name = LANGUAGE, defaultValue = DEFAULT_LANGUAGE) String language
+  ) {
+    return ResponseGeneral.ofSuccess(messageService.getMessage(LIST_USER, language),
+          userService.getAllUsers(size, page)
+    );
+  }
+
+  @PutMapping("{id}")
+  public ResponseGeneral<UserResponse> update(
+        @PathVariable String id,
+        @RequestBody UserRequest request,
+        @RequestHeader(name = LANGUAGE, defaultValue = DEFAULT_LANGUAGE) String language
+  ) {
+    log.info("(delete) id : {}", id);
+    return ResponseGeneral.ofSuccess(messageService.getMessage(UPDATE_USER, language),
+          userService.updateUser(request, id)
+    );
+  }
 }
 

@@ -8,6 +8,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.jpa.repository.query.Procedure;
 import org.springframework.data.repository.query.Param;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -40,10 +41,10 @@ public interface UserRepository extends BaseRepository<User> {
    * @return A paginated list of UserResponse objects.
    */
   @Query("""
-             select new com.example.springproject.dto.response.UserResponse
-             (u.id, u.username,u.password,u.email,u.phone,u.role)
-             from User u
-         """)
+            select new com.example.springproject.dto.response.UserResponse
+            (u.id, u.username,u.password,u.email,u.phone,u.role)
+            from User u
+        """)
   Page<UserResponse> findAllUser(Pageable pageable);
 
   /**
@@ -66,16 +67,16 @@ public interface UserRepository extends BaseRepository<User> {
 //        """)
 //  Page<UserResponse> searchUser(Pageable pageable, String keyword);
   @Query("""
-        select new com.example.springproject.dto.response.UserResponse
-        (u.id, u.username, u.password, u.email, u.phone, u.role)
-        from User u
-        where (:keyword is null or
-        lower(u.username) LIKE lower(concat(:prefix, :keyword, :suffix)) or
-        lower(u.phone) LIKE lower(concat(:prefix, :keyword, :suffix)) or
-        lower(u.email) LIKE lower(concat(:prefix, :keyword, :suffix)) or
-        lower(u.phone) LIKE lower(concat(:prefix, :keyword, :suffix)) or
-        lower(u.role) LIKE lower(concat(:prefix, :keyword, :suffix)))
-    """)
+            select new com.example.springproject.dto.response.UserResponse
+            (u.id, u.username, u.password, u.email, u.phone, u.role)
+            from User u
+            where (:keyword is null or
+            lower(u.username) LIKE lower(concat(:prefix, :keyword, :suffix)) or
+            lower(u.phone) LIKE lower(concat(:prefix, :keyword, :suffix)) or
+            lower(u.email) LIKE lower(concat(:prefix, :keyword, :suffix)) or
+            lower(u.phone) LIKE lower(concat(:prefix, :keyword, :suffix)) or
+            lower(u.role) LIKE lower(concat(:prefix, :keyword, :suffix)))
+        """)
   Page<UserResponse> searchUser(Pageable pageable, @Param("keyword") String keyword,
                                 @Param("prefix") String prefix, @Param("suffix") String suffix);
 
@@ -84,9 +85,9 @@ public interface UserRepository extends BaseRepository<User> {
   /**
    * Custom method to call a stored procedure named "get_all_users" with pagination parameters.
    *
-   * @param pageSize    The number of records to retrieve in each page.
-   * @param pageNumber  The page number.
-   * @return             A list of User entities returned by the stored procedure.
+   * @param pageSize   The number of records to retrieve in each page.
+   * @param pageNumber The page number.
+   * @return A list of User entities returned by the stored procedure.
    */
   @Procedure(procedureName = "get_all_users")
   List<User> getAllUser(@Param("pageSize") int pageSize, @Param("pageNumber") int pageNumber);
@@ -94,7 +95,7 @@ public interface UserRepository extends BaseRepository<User> {
 
   /**
    * Executes a stored procedure to add a new user to the database.
-   *
+   * <p>
    * This method invokes a stored procedure named "add_new_user" to insert a new user into the database.
    * The procedure takes parameters for the username, password, email, phone, and role.
    *
@@ -106,16 +107,16 @@ public interface UserRepository extends BaseRepository<User> {
    */
   @Procedure(procedureName = "add_new_user")
   void addNewUser(
-          @Param("p_username") String username,
-          @Param("p_password") String password,
-          @Param("p_email") String email,
-          @Param("p_phone") String phone,
-          @Param("p_role") String role
+        @Param("p_username") String username,
+        @Param("p_password") String password,
+        @Param("p_email") String email,
+        @Param("p_phone") String phone,
+        @Param("p_role") String role
   );
 
   /**
    * Executes a stored procedure to delete a user by their unique identifier.
-   *
+   * <p>
    * This method invokes a stored procedure named "delete_user_by_id" to delete a user from the database
    * based on the provided unique identifier.
    *
@@ -127,7 +128,7 @@ public interface UserRepository extends BaseRepository<User> {
 
   /**
    * Calls a stored procedure to update user information in the database.
-   *
+   * <p>
    * This method invokes a stored procedure named "update_user" to update the information of a user in the database.
    * It passes the provided parameters for user ID, username, password, email, phone, and role to the stored procedure.
    * The stored procedure is expected to return a User object representing the updated user.
@@ -140,13 +141,14 @@ public interface UserRepository extends BaseRepository<User> {
    * @param role     The new role for the user.
    * @return A User object representing the updated user.
    */
+  @Transactional
   @Procedure(procedureName = "update_user")
-  UserResponse updateUser(
-          @Param("p_user_id") String userId,
-          @Param("p_username") String username,
-          @Param("p_password") String password,
-          @Param("p_email") String email,
-          @Param("p_phone") String phone,
-          @Param("p_role") String role
+  User updateUser(
+        @Param("p_user_id") String userId,
+        @Param("p_username") String username,
+        @Param("p_password") String password,
+        @Param("p_email") String email,
+        @Param("p_phone") String phone,
+        @Param("p_role") String role
   );
 }
