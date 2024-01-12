@@ -3,6 +3,7 @@ package com.example.springproject.service.impl;
 import com.example.springproject.dto.base.ResponseGeneral;
 import com.example.springproject.dto.request.AuthenticationRequest;
 import com.example.springproject.dto.response.AuthenticationResponse;
+import com.example.springproject.entity.Role;
 import com.example.springproject.entity.User;
 import com.example.springproject.repository.UserRepository;
 import com.example.springproject.security.CustomUserDetail;
@@ -14,7 +15,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.Date;
+
 
 @Service
 public class AuthenticationService {
@@ -35,6 +36,7 @@ public class AuthenticationService {
     User user = MapperUtils.toEntity(dto, User.class);
     user.setPassword(passwordEncoder.encode(dto.getPassword()));
     user.setCreatedAt(DateUtils.getCurrentTimeMillis());
+    user.setRole(Role.USER);
     userRepository.save(user);
     return ResponseGeneral.ofCreated("Success!", AuthenticationResponse.builder()
           .token(jwtService.generateToken(new CustomUserDetail(user)))
@@ -47,5 +49,15 @@ public class AuthenticationService {
     return ResponseGeneral.ofSuccess("User has been authenticated!", AuthenticationResponse.builder()
           .token(jwtService.generateToken(customUserDetail))
           .build());
+  }
+
+  public ResponseGeneral<AuthenticationResponse> createAdmin(AuthenticationRequest request){
+    User admin = MapperUtils.toEntity(request, User.class);
+    admin.setRole(Role.ADMIN);
+    admin.setPassword(passwordEncoder.encode(admin.getPassword()));
+    userRepository.save(admin);
+    return ResponseGeneral.ofCreated("Success!", AuthenticationResponse.builder()
+            .token(jwtService.generateToken(new CustomUserDetail(admin)))
+            .build());
   }
 }

@@ -15,6 +15,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import static com.example.springproject.constant.CommonConstants.*;
@@ -157,6 +158,7 @@ public class UserController {
     @Parameter(name = "page", description = "Page number", required = false)
     @Parameter(name = "language", description = "Language for response messages", required = false)
     @GetMapping("/all")
+//    @PreAuthorize("hasAuthority('GET')")
     public ResponseGeneral<PageResponse<UserResponse>> getAllUser(
             @RequestParam(name = "size", defaultValue = DEFAULT_PAGE_SIZE) int size,
             @RequestParam(name = "page", defaultValue = DEFAULT_PAGE_NUMBER) int page,

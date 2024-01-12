@@ -1,8 +1,11 @@
 package com.example.springproject.dto.request;
 
+import com.example.springproject.entity.Role;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import java.util.List;
 
 /**
  * This is a request dto (data transfer object) class contains user information
@@ -18,5 +21,5 @@ public class UserRequest {
   private String password;
   private String email;
   private String phone;
-  private String role;
+  private List<Role> role;
 }

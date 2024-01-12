@@ -6,6 +6,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
@@ -20,6 +22,8 @@ public class User extends BaseEntityWithUpdater {
   private String email;
   @Column(name = "phone")
   private String phone;
-  @Column(name = "role")
-  private String role;
+  @Enumerated(EnumType.STRING)
+  private Role role;
+
+
 }

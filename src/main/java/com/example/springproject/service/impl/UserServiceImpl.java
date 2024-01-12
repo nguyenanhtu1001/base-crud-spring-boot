@@ -3,16 +3,20 @@ package com.example.springproject.service.impl;
 import com.example.springproject.dto.base.PageResponse;
 import com.example.springproject.dto.request.UserRequest;
 import com.example.springproject.dto.response.UserResponse;
+import com.example.springproject.entity.Role;
 import com.example.springproject.entity.User;
 import com.example.springproject.exception.UserNotFoundException;
 import com.example.springproject.repository.UserRepository;
 import com.example.springproject.service.UserService;
 import com.example.springproject.service.base.BaseServiceImpl;
+import com.example.springproject.utils.MapperUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 import static com.example.springproject.constant.CommonConstants.PERCENT;
 
@@ -66,7 +70,7 @@ public class UserServiceImpl extends BaseServiceImpl<User> implements UserServic
                 request.getPassword(),
                 request.getEmail(),
                 request.getPhone(),
-                request.getRole()
+                Role.USER
         );
         this.create(user);
         return new UserResponse(
@@ -136,4 +140,6 @@ public class UserServiceImpl extends BaseServiceImpl<User> implements UserServic
     private User checkUserExist(String id) {
         return repository.findById(id).orElseThrow(UserNotFoundException::new);
     }
+
+
 }
