@@ -13,7 +13,6 @@ public class CommonConstants {
   public static final String BLANK_CONSTANT = "";
   public static final int DEFAULT_STATUS = 0;
   public static final String PERCENT = "%";
-
   public static final String SECRET_KEY = "hieulg789hieulg789hieulg789hieulg789hieulg789hieulg789hieulg789hieulg789hieulg789hieulg789hieulg789";
 
 }
