@@ -29,9 +29,5 @@ public class AuthenticationController {
         return authenticationService.authenticate(authenticationRequest);
     }
 
-    @PostMapping("/admin")
-    @ResponseStatus(HttpStatus.OK)
-    public ResponseGeneral<AuthenticationResponse> createAdmin(@RequestBody AuthenticationRequest authenticationRequest){
-        return authenticationService.createAdmin(authenticationRequest);
-    }
+
 }

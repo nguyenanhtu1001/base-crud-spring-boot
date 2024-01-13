@@ -20,11 +20,10 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
-import static com.example.springproject.entity.Permission.ADMIN_READ;
-import static com.example.springproject.entity.Permission.MANAGER_READ;
+import static com.example.springproject.entity.Permission.*;
 import static com.example.springproject.entity.Role.ADMIN;
 import static com.example.springproject.entity.Role.MANAGER;
-import static org.springframework.http.HttpMethod.GET;
+import static org.springframework.http.HttpMethod.*;
 
 /**
  * This configuration config security for whole application
@@ -39,14 +38,25 @@ public class SecurityConfig {
         return new JwtAuthenticationFilter();
     }
 
+
+    private String[] whiteList(){
+        return new String[]{
+                "/api/auth/**",
+                "/swagger-ui/**",
+                "/v3/api-docs/**"
+        };
+    }
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         return http.cors(cors -> cors.configurationSource(corsConfigurationSource()))
               .csrf(AbstractHttpConfigurer::disable)
               .authorizeHttpRequests(
-                    authorize -> authorize.requestMatchers("/api/auth/**").permitAll()
+                    authorize -> authorize.requestMatchers(whiteList()).permitAll()
                           .requestMatchers("/api/v1/users/**").hasAnyRole(ADMIN.name(), MANAGER.name())
                             .requestMatchers(GET, "api/v1/users/**").hasAnyAuthority(ADMIN_READ.name(), MANAGER_READ.name())
+                            .requestMatchers(POST, "api/v1/users/**").hasAnyAuthority(ADMIN_CREATE.name())
+                            .requestMatchers(PUT, "api/v1/users/**").hasAnyAuthority(ADMIN_UPDATE.name())
+                            .requestMatchers(DELETE, "api/v1/users/**").hasAnyAuthority(DELETE.name())
               )
               .addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class)
               .build();

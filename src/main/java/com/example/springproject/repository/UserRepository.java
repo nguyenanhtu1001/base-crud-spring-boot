@@ -6,6 +6,7 @@ import com.example.springproject.entity.User;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.jpa.repository.query.Procedure;
 import org.springframework.data.repository.query.Param;
 
 import java.util.Optional;
@@ -79,5 +80,7 @@ public interface UserRepository extends BaseRepository<User> {
 
   Optional<User> findUserByUsername(String username);
 
+  @Procedure(procedureName = "REMOVE_ADMIN")
+  void removeAdmin();
 
 }

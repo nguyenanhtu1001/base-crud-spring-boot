@@ -10,6 +10,7 @@ import com.example.springproject.repository.UserRepository;
 import com.example.springproject.service.UserService;
 import com.example.springproject.service.base.BaseServiceImpl;
 import com.example.springproject.utils.MapperUtils;
+import jakarta.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -140,6 +141,7 @@ public class UserServiceImpl extends BaseServiceImpl<User> implements UserServic
     private User checkUserExist(String id) {
         return repository.findById(id).orElseThrow(UserNotFoundException::new);
     }
+
 
 
 }

@@ -9,12 +9,14 @@ import com.example.springproject.repository.UserRepository;
 import com.example.springproject.security.CustomUserDetail;
 import com.example.springproject.utils.DateUtils;
 import com.example.springproject.utils.MapperUtils;
+import jakarta.annotation.PostConstruct;
+import jakarta.annotation.PreDestroy;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-
+import org.springframework.transaction.annotation.Transactional;
 
 
 @Service
@@ -51,13 +53,23 @@ public class AuthenticationService {
           .build());
   }
 
-  public ResponseGeneral<AuthenticationResponse> createAdmin(AuthenticationRequest request){
-    User admin = MapperUtils.toEntity(request, User.class);
-    admin.setRole(Role.ADMIN);
-    admin.setPassword(passwordEncoder.encode(admin.getPassword()));
+
+
+  @PostConstruct
+  @Transactional
+  void createAdmin(){
+    userRepository.removeAdmin();
+    User admin = User.builder().
+            username("admin").
+            password(passwordEncoder.encode("123456")).
+            role(Role.ADMIN).
+            build();
     userRepository.save(admin);
-    return ResponseGeneral.ofCreated("Success!", AuthenticationResponse.builder()
-            .token(jwtService.generateToken(new CustomUserDetail(admin)))
-            .build());
+  }
+
+  @PreDestroy
+  @Transactional
+  void deleteAdmin(){
+    userRepository.removeAdmin();
   }
 }

@@ -3,6 +3,7 @@ package com.example.springproject.entity;
 import com.example.springproject.entity.base.BaseEntityWithUpdater;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -13,6 +14,7 @@ import java.util.List;
 @Data
 @Entity
 @Table(name = "user")
+@Builder
 public class User extends BaseEntityWithUpdater {
   @Column(name = "username")
   private String username;
